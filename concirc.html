@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  background: #000;
+}
+
+h1 {
+  margin-top: 80px;
+  color: white;
+}
+
+#slider1 {
+  color: white;
+  margin-top:  100px;
+}
+
+.dot {
+  fill: #fff;
+}
+
+
+
+.ring {
+  fill: none;
+  stroke: #fff;
+}
+
+.rec {
+  fill: none;
+  stroke: #ffffff;
+}
+
+</style>
+
+
+<body>
+    
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+<script>
+
+//var margin = {top: 30, bottom: 30, right: 50, left: 50}
+
+var width = window.innerWidth;
+var height = window.innerHeight;
+
+
+var drag = d3.behavior.drag() 
+    .origin(function(d) {return d;})
+    .on("dragstart", dragstarted)
+    .on("drag", dragged)
+    .on("dragend", dragended)
+
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")" );
+
+var rect = svg.append("rect")
+    .attr("class", "rec")
+    .attr("x", width / 2 - 200)
+    .attr("width", 400)
+    .attr("y", ((height / 2) - 300 ))
+    .attr("height", 600)
+    //.style("pointer-events", "all")
+
+
+dong(20, 100, 100);
+dong(50, 200, 0);
+dong(30, 60, -40);
+
+
+function dong(amp, y, x) {
+    var circ = svg.append("circle")
+        .attr("class", "dot")
+        //.attr("transform", "translate(" + projection([100, -5]) + ")")
+        .attr("r", 8)
+        .attr("cy", 610 - y)
+        .attr("cx", width / 2 + x)
+        .call(drag);
+
+
+
+
+
+    setInterval(function() {
+      svg.append("circle")
+          .attr("class", "ring")
+          .attr("cy", 610 - y)
+          .attr("cx", width / 2 + x)
+          .attr("r", 6)
+          .style("stroke-width", 3)
+          .style("stroke", "gray")
+        .transition()
+          .ease("linear")
+          .duration(1000)
+          .style("stroke-opacity", .7)
+          .style("stroke-width", 1)
+          .style("stroke", "gray")
+          .attr("r", 200)
+          .remove();
+    }, amp);
+}
+function dottype(d) {
+  d.x = +d.x;
+  d.y = +d.y;
+  return d;
+}
+
+function dragstarted(d) {
+  d3.event.sourceEvent.stopPropagation();
+  d3.select(this).classed("dragging", true);
+}
+
+function dragged(d) {
+  d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+}
+
+function dragended(d) {
+  d3.select(this).classed("dragging", false);
+}
+
+d3.select(self.frameElement).style("height", height + "px");
+
+</script>
+
+
+</body>
+</html>
